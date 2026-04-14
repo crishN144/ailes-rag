@@ -1,4 +1,4 @@
-# AILES RAG System - Handoff Package
+# AILES RAG System 
 
 Hybrid retrieval system for UK family law. 310,177 chunks (303K judgments + 7K statutes) with dense (BGE) + sparse (BM25) search, RRF fusion, and cross-encoder reranking.
 
