@@ -75,13 +75,7 @@ python3 3_tests_and_results/run_pipeline.py --query "How are child welfare consi
 
 Runs all 10 steps: Gemini query translation, BGE embedding, Qdrant hybrid search, RRF fusion, cross-encoder reranking, Gemini answer generation.
 
-To see what the output looks like without setting up Qdrant/Gemini, run the offline demo:
-
-```bash
-python3 3_tests_and_results/demo_pipeline.py
-```
-
-See `3_tests_and_results/output.md` for the full sample output.
+See `3_tests_and_results/output.md` for output from a previous pipeline run (Dec 2025).
 
 ---
 
@@ -283,8 +277,7 @@ ailes-rag-handoff/
     ├── run_pipeline.py               <- Full 10-step retrieval pipeline (requires Qdrant + Gemini)
     ├── run_benchmark.py              <- Golden query benchmark runner (requires Qdrant)
     ├── golden_queries.json           <- 20 verified golden queries
-    ├── demo_pipeline.py              <- Offline demo (no connections needed, same output format)
-    └── output.md                     <- Sample output from a pipeline run
+    └── output.md                     <- Output from a previous pipeline run (Dec 2025)
 ```
 
 ## Environment Variables
