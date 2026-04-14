@@ -27,10 +27,7 @@ from collections import defaultdict
 
 # ─── Configuration ───────────────────────────────────────────────────────────
 
-QDRANT_URL = os.getenv(
-    "QDRANT_URL",
-    "https://1f674c1b-78e4-4df7-82d6-12d4bc1fad52.europe-west3-0.gcp.cloud.qdrant.io"
-)
+QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 

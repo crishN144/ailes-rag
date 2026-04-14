@@ -24,14 +24,15 @@ def main():
     print("="*100 + "\n")
 
     # Configuration
-    QDRANT_URL = os.getenv('QDRANT_URL', 'https://your-cluster.qdrant.io')
+    QDRANT_URL = os.getenv('QDRANT_URL', 'http://localhost:6333')
     QDRANT_API_KEY = os.getenv('QDRANT_API_KEY')
 
-    merged_file = Path('/mnt/scratch/bgxp240/ailes_rag/merged_all_chunks.json')
-    embeddings_file = Path('/mnt/scratch/bgxp240/ailes_rag/embeddings/bge_embeddings.npy')
-    bm25_dir = Path('/mnt/scratch/bgxp240/ailes_rag/bm25_index')
+    base_dir = Path.home() / 'Downloads' / 'hpc_outputs'
+    merged_file = base_dir / 'merged_all_chunks.json'
+    embeddings_file = base_dir / 'embeddings' / 'bge_embeddings.npy'
+    bm25_dir = base_dir / 'bm25_index'
 
-    collection_name = 'uk_family_law_hybrid'
+    collection_name = 'uk_family_law_dense'
     batch_size = 100  # Qdrant batch size
 
     print(f"Configuration:")

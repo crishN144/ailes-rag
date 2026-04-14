@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
 AILES RAG Benchmark Runner
-Loads golden queries from retrieval_benchmark_v2.json, runs each through
+Loads golden queries from golden_queries.json, runs each through
 the hybrid pipeline (BGE + BM25 + RRF + Cross-Encoder), compares results
 against expected documents, and computes Recall@K, MRR, Hit Rate.
 
 Usage:
     python3 run_benchmark.py
-    python3 run_benchmark.py --benchmark retrieval_benchmark_v2.json
+    python3 run_benchmark.py --benchmark golden_queries.json
     python3 run_benchmark.py --category financial_remedy
     python3 run_benchmark.py --query-type plain_english
     python3 run_benchmark.py --save results_2025_12_21.json
@@ -32,10 +32,7 @@ from collections import defaultdict
 
 # ─── Config ──────────────────────────────────────────────────────────────────
 
-QDRANT_URL = os.getenv(
-    "QDRANT_URL",
-    "https://1f674c1b-78e4-4df7-82d6-12d4bc1fad52.europe-west3-0.gcp.cloud.qdrant.io"
-)
+QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 COLLECTION = "uk_family_law_dense"
 BM25_DIR = Path.home() / "Downloads" / "hpc_outputs" / "bm25_index"
@@ -391,7 +388,7 @@ def run_benchmark(benchmark_path: str, retriever: HybridRetriever,
 
 def main():
     parser = argparse.ArgumentParser(description="AILES RAG Benchmark Runner")
-    parser.add_argument("--benchmark", type=str, default="retrieval_benchmark_v2.json",
+    parser.add_argument("--benchmark", type=str, default="golden_queries.json",
                         help="Path to benchmark JSON")
     parser.add_argument("--category", type=str, default=None,
                         help="Filter by category (financial_remedy, children_welfare, etc.)")

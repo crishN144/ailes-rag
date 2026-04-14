@@ -20,8 +20,9 @@ def main():
     print("="*100 + "\n")
 
     # Configuration
-    merged_file = Path('/mnt/scratch/bgxp240/ailes_rag/merged_all_chunks.json')
-    output_dir = Path('/mnt/scratch/bgxp240/ailes_rag/embeddings')
+    base_dir = Path.home() / 'Downloads' / 'hpc_outputs'
+    merged_file = base_dir / 'merged_all_chunks.json'
+    output_dir = base_dir / 'embeddings'
     output_dir.mkdir(exist_ok=True, parents=True)
 
     model_name = 'BAAI/bge-large-en-v1.5'  # Best BGE model for English

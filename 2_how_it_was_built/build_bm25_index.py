@@ -18,8 +18,9 @@ def main():
     print("="*100 + "\n")
 
     # Paths
-    merged_file = Path('/mnt/scratch/bgxp240/ailes_rag/merged_all_chunks.json')
-    output_dir = Path('/mnt/scratch/bgxp240/ailes_rag/bm25_index')
+    base_dir = Path.home() / 'Downloads' / 'hpc_outputs'
+    merged_file = base_dir / 'merged_all_chunks.json'
+    output_dir = base_dir / 'bm25_index'
     output_dir.mkdir(exist_ok=True, parents=True)
 
     # Load merged data
