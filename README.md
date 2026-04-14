@@ -75,6 +75,14 @@ python3 3_tests_and_results/run_pipeline.py --query "How are child welfare consi
 
 Runs all 10 steps: Gemini query translation, BGE embedding, Qdrant hybrid search, RRF fusion, cross-encoder reranking, Gemini answer generation.
 
+To see what the output looks like without setting up Qdrant/Gemini, run the offline demo:
+
+```bash
+python3 3_tests_and_results/demo_pipeline.py
+```
+
+See `3_tests_and_results/output.md` for the full sample output.
+
 ---
 
 ## How the Data Was Built
