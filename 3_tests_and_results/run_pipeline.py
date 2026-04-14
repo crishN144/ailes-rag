@@ -30,12 +30,12 @@ from collections import defaultdict
 QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+LLM_MODEL = os.getenv("LLM_MODEL", "gemini-2.0-flash")
 
 COLLECTION_NAME = "uk_family_law_dense"
 BM25_DIR = Path.home() / "Downloads" / "hpc_outputs" / "bm25_index"
 DENSE_MODEL = "BAAI/bge-large-en-v1.5"
 RERANKER_MODEL = "cross-encoder/ms-marco-MiniLM-L-12-v2"
-GEMINI_MODEL = "gemini-2.0-flash"
 
 RRF_K = 60
 DENSE_LIMIT = 20
@@ -69,7 +69,7 @@ def translate_query(original_query: str) -> Dict:
 
     import google.generativeai as genai
     genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel(GEMINI_MODEL)
+    model = genai.GenerativeModel(LLM_MODEL)
 
     prompt = f"""You are a UK family law legal query translator. Rewrite the user query using precise UK family law terminology.
 
@@ -88,7 +88,7 @@ Rules:
 - Include related legal concepts
 - Keep search_keywords as individual terms for BM25 matching"""
 
-    print(f"   Calling {GEMINI_MODEL}...")
+    print(f"   Calling {LLM_MODEL}...")
     t0 = time.time()
     response = model.generate_content(prompt)
     elapsed = (time.time() - t0) * 1000
@@ -449,12 +449,12 @@ def package_context(query: str, results: List) -> str:
 def generate_answer(prompt: str):
     import google.generativeai as genai
 
-    step_header(9, f"LLM ANSWER GENERATION ({GEMINI_MODEL})")
+    step_header(9, f"LLM ANSWER GENERATION ({LLM_MODEL})")
     print(f"   Generating answer from retrieved chunks...")
     print()
 
     genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel(GEMINI_MODEL)
+    model = genai.GenerativeModel(LLM_MODEL)
 
     t0 = time.time()
     response = model.generate_content(prompt)
@@ -507,7 +507,7 @@ def format_response(query, answer, results, timings):
             "dense_model": DENSE_MODEL,
             "sparse_model": "BM25Okapi",
             "reranker": RERANKER_MODEL,
-            "generator": GEMINI_MODEL,
+            "generator": LLM_MODEL,
             "fusion": "reciprocal_rank_fusion",
         },
     }

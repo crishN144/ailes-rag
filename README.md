@@ -288,4 +288,12 @@ ailes-rag-handoff/
 export QDRANT_URL="https://your-cluster.qdrant.io"
 export QDRANT_API_KEY="your-api-key"
 export GEMINI_API_KEY="your-gemini-key"
+export LLM_MODEL="gemini-2.0-flash"          # default, can swap to test alternatives
+```
+
+`LLM_MODEL` controls which model is used for query translation and answer generation. To compare models:
+
+```bash
+LLM_MODEL=gemini-2.0-flash python3 3_tests_and_results/run_benchmark.py --save gemini_results.json
+LLM_MODEL=gemma-3-4b python3 3_tests_and_results/run_benchmark.py --save gemma_results.json
 ```
