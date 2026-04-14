@@ -272,9 +272,11 @@ ailes-rag-handoff/
 │   └── query_translation.py          <- Gemini Flash query generation
 │
 └── 3_tests_and_results/
-    ├── run_pipeline.py               <- Full 10-step retrieval pipeline
-    ├── run_benchmark.py              <- Golden query benchmark runner
-    └── golden_queries.json           <- 20 verified golden queries
+    ├── run_pipeline.py               <- Full 10-step retrieval pipeline (requires Qdrant + Gemini)
+    ├── run_benchmark.py              <- Golden query benchmark runner (requires Qdrant)
+    ├── golden_queries.json           <- 20 verified golden queries
+    ├── demo_pipeline.py              <- Offline demo (no connections needed, same output format)
+    └── output.md                     <- Sample output from a pipeline run
 ```
 
 ## Environment Variables
