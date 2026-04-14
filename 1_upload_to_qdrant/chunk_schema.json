@@ -1,0 +1,476 @@
+{
+  "description": "Two complete judgment chunks showing full Mistral-12B enrichment",
+  "note": "These demonstrate: (1) Sliding window overlap, (2) Dual text fields, (3) Case-level context for consistency, (4) All 7 Mistral enrichment tasks",
+
+  "chunk_1_background_facts": {
+    "comment": "Paragraph 15 - Background facts about the marriage and assets",
+
+    "_IDENTIFIERS": "======================",
+    "chunk_id": "ewhc-2016-562-fam-para-15",
+    "chunk_type": "judgment_paragraph",
+
+    "_CASE_METADATA": "======================",
+    "case_name": "[2016] EWHC 562 (Fam)",
+    "case_year": 2016,
+    "court": "EWHC-Family",
+    "judgment_date": "2016-03-15",
+    "case_file": "[2016] EWHC 562 (Fam).xml",
+    "judge": "Mr Justice Mostyn",
+
+    "_TEXT_FIELDS_DUAL_APPROACH": "======================",
+    "paragraph_text": "The parties married in July 1995 after a courtship of four years. They have two children: a son aged 16 and a daughter aged 13. The husband is a property developer who built up a substantial business during the marriage, now valued at approximately £25M. The wife ceased work shortly after the birth of their first child and devoted herself full-time to homemaking and caring for the children. The matrimonial home in Kensington is valued at £30M. The husband also has business premises valued at £5M and investment properties generating £800k per annum. The wife has made no direct financial contributions but has been the primary caregiver throughout the 20-year marriage.",
+
+    "enriched_text": "[OVERLAP FROM PARA 14] The husband filed his Form E on 15 January 2016 disclosing total assets of £55M. The wife's Form E disclosed assets of £2M consisting mainly of jewelry and personal chattels. [END OVERLAP] The parties married in July 1995 after a courtship of four years. They have two children: a son aged 16 and a daughter aged 13. The husband is a property developer who built up a substantial business during the marriage, now valued at approximately £25M. The wife ceased work shortly after the birth of their first child and devoted herself full-time to homemaking and caring for the children. The matrimonial home in Kensington is valued at £30M. The husband also has business premises valued at £5M and investment properties generating £800k per annum. The wife has made no direct financial contributions but has been the primary caregiver throughout the 20-year marriage.",
+
+    "bm25_text": "parties married July 1995 courtship four years two children son aged 16 daughter aged 13 husband property developer business marriage valued 25M wife ceased work birth first child homemaking caring children matrimonial home Kensington valued 30M business premises 5M investment properties 800k per annum wife no direct financial contributions primary caregiver 20-year marriage",
+
+    "_PARAGRAPH_METADATA": "======================",
+    "paragraph_number": 15,
+    "paragraph_eId": "para_15",
+    "total_paragraphs": 94,
+    "token_count": 145,
+    "token_count_enriched": 178,
+
+    "_MISTRAL_TASK_1_ENTITIES": "======================",
+    "entities": {
+      "people": [
+        {"role": "wife", "description": "primary homemaker, ceased work after first child"},
+        {"role": "husband", "description": "property developer, business owner"},
+        {"role": "son", "age": 16},
+        {"role": "daughter", "age": 13}
+      ],
+      "financial_amounts": [
+        {"item": "husband_business", "value": 25000000, "currency": "GBP"},
+        {"item": "matrimonial_home", "value": 30000000, "currency": "GBP", "location": "Kensington"},
+        {"item": "business_premises", "value": 5000000, "currency": "GBP"},
+        {"item": "investment_income", "value": 800000, "currency": "GBP", "period": "per annum"}
+      ],
+      "properties": [
+        {"type": "matrimonial_home", "location": "Kensington", "value": 30000000},
+        {"type": "business_premises", "value": 5000000},
+        {"type": "investment_properties", "income": 800000}
+      ],
+      "businesses": [
+        {"type": "property_development", "value": 25000000, "built_during_marriage": true}
+      ],
+      "durations": [
+        {"event": "marriage", "duration": "20 years", "start_year": 1995},
+        {"event": "courtship", "duration": "4 years"},
+        {"event": "wife_homemaking", "duration": "approximately 16 years"}
+      ]
+    },
+
+    "_MISTRAL_TASK_2_CLASSIFICATION": "======================",
+    "paragraph_type": "background_facts",
+    "is_ratio_decidendi": false,
+    "importance_score": 0.85,
+    "reasoning": "Critical factual background establishing marriage duration, roles, and asset accumulation",
+
+    "_MISTRAL_TASK_3_LEGAL_TOPICS": "======================",
+    "primary_topics": [
+      "homemaker_contributions",
+      "business_built_during_marriage",
+      "long_marriage",
+      "financial_provision",
+      "primary_caregiver_role",
+      "matrimonial_home_valuation",
+      "income_generating_assets"
+    ],
+    "section_25_factors_discussed": [
+      "25(2)(a)_income_earning_capacity",
+      "25(2)(b)_financial_needs",
+      "25(2)(c)_standard_of_living",
+      "25(2)(f)_contributions_to_welfare",
+      "25(2)(g)_conduct"
+    ],
+    "statute_references": [
+      {"statute": "MCA_1973", "section": "25(2)(f)", "relevance": "homemaker contributions"},
+      {"statute": "MCA_1973", "section": "25(2)(a)", "relevance": "husband's income from business"}
+    ],
+
+    "_MISTRAL_TASK_4_SEMANTIC_SUMMARY": "======================",
+    "semantic_summary": "Background facts paragraph establishing key matrimonial circumstances. 20-year marriage (1995-present) with two children aged 16 and 13. Husband property developer who built £25M business during marriage plus matrimonial home worth £30M and investment properties generating £800k annually. Wife ceased work after first child's birth and was primary caregiver throughout marriage. Classic scenario of homemaker wife versus business-building husband in long marriage with substantial assets (£55M total) accumulated during marriage. Wife made no direct financial contributions but significant homemaker and childcare contributions. Marriage duration and wife's role as primary caregiver are critical factors for Section 25(2)(f) analysis.",
+
+    "_MISTRAL_TASK_5_LEGAL_PRINCIPLES": "======================",
+    "legal_principles_identified": [
+      {
+        "principle": "Homemaker contributions equal to financial contributions in long marriage",
+        "authority": "White v White [2000] UKHL 54",
+        "applicability": "high"
+      },
+      {
+        "principle": "Business built during marriage is matrimonial property",
+        "authority": "Miller v Miller [2006] UKHL 24",
+        "applicability": "high"
+      }
+    ],
+    "distinguishing_features": [
+      "Very high net worth (£55M)",
+      "All assets accumulated during marriage",
+      "Clear role division: breadwinner vs homemaker"
+    ],
+
+    "_MISTRAL_TASK_6_CASE_CATEGORIZATION": "======================",
+    "case_category": "financial_provision_high_net_worth",
+    "case_sub_category": "long_marriage_homemaker_substantial_assets",
+    "case_tags": [
+      "long_marriage",
+      "high_net_worth",
+      "homemaker_wife",
+      "business_owner_husband",
+      "property_developer",
+      "matrimonial_home_high_value",
+      "two_children",
+      "all_assets_during_marriage",
+      "investment_income"
+    ],
+    "complexity_score": 7.5,
+
+    "_MISTRAL_TASK_7_CASE_CONTEXT_SHARED_BY_ALL_PARAGRAPHS": "======================",
+    "case_context": {
+      "comment": "This object is SHARED by ALL paragraphs in this case - ensures consistency",
+
+      "marriage_details": {
+        "marriage_date": "1995-07",
+        "marriage_duration_years": 20,
+        "courtship_years": 4,
+        "separation_date": "2015-06",
+        "marriage_type": "long_marriage"
+      },
+
+      "children": {
+        "count": 2,
+        "details": [
+          {"type": "son", "age": 16, "dependent": true},
+          {"type": "daughter", "age": 13, "dependent": true}
+        ],
+        "all_dependent": true
+      },
+
+      "financial_snapshot": {
+        "total_assets": 55000000,
+        "husband_assets": 53000000,
+        "wife_assets": 2000000,
+        "matrimonial_home_value": 30000000,
+        "business_value": 25000000,
+        "investment_income_annual": 800000,
+        "all_assets_acquired_during_marriage": true
+      },
+
+      "party_roles": {
+        "husband": {
+          "role": "primary_breadwinner",
+          "occupation": "property_developer",
+          "business_owner": true,
+          "business_built_during_marriage": true
+        },
+        "wife": {
+          "role": "primary_homemaker",
+          "employment_status": "ceased_work_after_first_child",
+          "primary_caregiver": true,
+          "direct_financial_contributions": false,
+          "homemaker_contributions": true
+        }
+      },
+
+      "key_assets": [
+        {"type": "matrimonial_home", "location": "Kensington", "value": 30000000, "acquired_during_marriage": true},
+        {"type": "business", "description": "property development company", "value": 25000000, "built_during_marriage": true},
+        {"type": "investment_properties", "annual_income": 800000},
+        {"type": "business_premises", "value": 5000000}
+      ],
+
+      "applicable_section_25_factors": [
+        "25(2)(a)_income_earning_capacity",
+        "25(2)(b)_financial_needs",
+        "25(2)(c)_standard_of_living",
+        "25(2)(f)_contributions_to_welfare",
+        "25(2)(g)_conduct"
+      ]
+    },
+
+    "_QUERY_MATCHING_METADATA": "======================",
+    "matches_user_scenarios": [
+      "wife_was_homemaker",
+      "husband_built_business_during_marriage",
+      "long_marriage_20_years_plus",
+      "high_net_worth_50M_plus",
+      "two_children_dependent",
+      "matrimonial_home_high_value",
+      "wife_ceased_work_for_children",
+      "property_development_business",
+      "investment_properties",
+      "all_assets_acquired_during_marriage",
+      "no_premarital_assets"
+    ],
+
+    "relevant_form_e_sections": [
+      "contributions",
+      "assets_property",
+      "assets_business",
+      "income_investment",
+      "children",
+      "needs_housing"
+    ],
+
+    "retrieval_keywords": [
+      "homemaker",
+      "property developer",
+      "business during marriage",
+      "£25M business",
+      "£30M home",
+      "primary caregiver",
+      "20-year marriage",
+      "wife ceased work",
+      "two children",
+      "Kensington",
+      "investment income"
+    ]
+  },
+
+  "chunk_2_ratio_decidendi": {
+    "comment": "Paragraph 87 - Court's reasoning and order (ratio decidendi)",
+
+    "_IDENTIFIERS": "======================",
+    "chunk_id": "ewhc-2016-562-fam-para-87",
+    "chunk_type": "judgment_paragraph",
+
+    "_CASE_METADATA": "======================",
+    "case_name": "[2016] EWHC 562 (Fam)",
+    "case_year": 2016,
+    "court": "EWHC-Family",
+    "judgment_date": "2016-03-15",
+    "case_file": "[2016] EWHC 562 (Fam).xml",
+    "judge": "Mr Justice Mostyn",
+
+    "_TEXT_FIELDS_DUAL_APPROACH": "======================",
+    "paragraph_text": "Applying the principles in White v White and Miller v Miller, I find that this is a paradigm case of equal sharing. The marriage lasted 20 years. The wife's contributions as homemaker and primary caregiver were equal in value to the husband's financial contributions. The business, though built by the husband's skill and endeavor, was accumulated entirely during the marriage. The wife's role enabled the husband to focus on building the business. I reject the husband's argument for a 60/40 split in his favor. This would fail to recognize the equal value of non-financial contributions in a long marriage. Accordingly, I order that the assets be divided equally: the wife shall receive the matrimonial home (£30M), half the business value (£12.5M), and sufficient liquid assets to bring her total to £27.5M. The husband retains the business and investment properties. This achieves an equal division and meets the wife's needs while allowing the husband to continue operating the business.",
+
+    "enriched_text": "[OVERLAP FROM PARA 86] The husband submits that he should retain 60% of the assets based on his business acumen and entrepreneurial skill. The wife seeks equality based on her homemaker contributions during the 20-year marriage. [END OVERLAP] Applying the principles in White v White and Miller v Miller, I find that this is a paradigm case of equal sharing. The marriage lasted 20 years. The wife's contributions as homemaker and primary caregiver were equal in value to the husband's financial contributions. The business, though built by the husband's skill and endeavor, was accumulated entirely during the marriage. The wife's role enabled the husband to focus on building the business. I reject the husband's argument for a 60/40 split in his favor. This would fail to recognize the equal value of non-financial contributions in a long marriage. Accordingly, I order that the assets be divided equally: the wife shall receive the matrimonial home (£30M), half the business value (£12.5M), and sufficient liquid assets to bring her total to £27.5M. The husband retains the business and investment properties. This achieves an equal division and meets the wife's needs while allowing the husband to continue operating the business.",
+
+    "bm25_text": "White White Miller Miller paradigm equal sharing marriage 20 years wife contributions homemaker primary caregiver equal value husband financial contributions business husband skill endeavor accumulated during marriage wife role enabled husband focus building business reject husband argument 60 40 split fail recognize equal value non-financial contributions long marriage order assets divided equally wife receive matrimonial home 30M half business value 12.5M liquid assets 27.5M husband retains business investment properties equal division meets wife needs husband continue operating business",
+
+    "_PARAGRAPH_METADATA": "======================",
+    "paragraph_number": 87,
+    "paragraph_eId": "para_87",
+    "total_paragraphs": 94,
+    "token_count": 178,
+    "token_count_enriched": 215,
+
+    "_MISTRAL_TASK_1_ENTITIES": "======================",
+    "entities": {
+      "people": [
+        {"role": "wife", "receives": "matrimonial home + £12.5M business value + liquid assets = £27.5M total"},
+        {"role": "husband", "receives": "business + investment properties = £27.5M total"}
+      ],
+      "financial_amounts": [
+        {"award": "wife_matrimonial_home", "value": 30000000, "currency": "GBP"},
+        {"award": "wife_business_share", "value": 12500000, "currency": "GBP"},
+        {"award": "wife_total", "value": 27500000, "currency": "GBP"},
+        {"award": "husband_total", "value": 27500000, "currency": "GBP"},
+        {"split_ratio": "50/50", "principle": "equal_sharing"}
+      ],
+      "properties": [
+        {"asset": "matrimonial_home", "awarded_to": "wife", "value": 30000000},
+        {"asset": "business", "awarded_to": "husband", "note": "wife receives £12.5M representing half value"},
+        {"asset": "investment_properties", "awarded_to": "husband"}
+      ],
+      "durations": [
+        {"marriage_duration": "20 years", "significance": "long marriage justifying equal sharing"}
+      ]
+    },
+
+    "_MISTRAL_TASK_2_CLASSIFICATION": "======================",
+    "paragraph_type": "ratio_decidendi",
+    "is_ratio_decidendi": true,
+    "importance_score": 1.0,
+    "reasoning": "Core legal reasoning and final order - this is the binding precedent",
+
+    "_MISTRAL_TASK_3_LEGAL_TOPICS": "======================",
+    "primary_topics": [
+      "equal_sharing_principle",
+      "homemaker_contributions_equal_value",
+      "matrimonial_property_division",
+      "long_marriage_equal_division",
+      "business_valuation_and_division",
+      "needs_versus_sharing",
+      "financial_provision_order"
+    ],
+    "section_25_factors_discussed": [
+      "25(2)(a)_income_earning_capacity",
+      "25(2)(b)_financial_needs",
+      "25(2)(f)_contributions_to_welfare"
+    ],
+    "statute_references": [
+      {"statute": "MCA_1973", "section": "23", "relevance": "financial provision orders"},
+      {"statute": "MCA_1973", "section": "24", "relevance": "property adjustment orders"},
+      {"statute": "MCA_1973", "section": "25(2)(f)", "relevance": "homemaker contributions equal to financial"}
+    ],
+    "case_law_applied": [
+      {"case": "White v White [2000] UKHL 54", "principle": "equal sharing in long marriage", "application": "directly applied"},
+      {"case": "Miller v Miller [2006] UKHL 24", "principle": "non-financial contributions equal value", "application": "directly applied"}
+    ],
+
+    "_MISTRAL_TASK_4_SEMANTIC_SUMMARY": "======================",
+    "semantic_summary": "Ratio decidendi paragraph containing court's binding legal reasoning and final order. Judge applies White v White and Miller v Miller principles to order equal (50/50) division of £55M assets. Explicitly rejects husband's 60/40 argument. Finds wife's homemaker contributions in 20-year marriage equal in value to husband's financial contributions. Though business built by husband's skill, it was accumulated during marriage while wife enabled his focus through homemaking. Wife awarded matrimonial home (£30M) plus £12.5M business value plus liquid assets totaling £27.5M. Husband retains business and investment properties totaling £27.5M. Order achieves equal sharing while meeting wife's needs and allowing husband to continue business operations. Critical precedent establishing equal sharing principle for long marriage with homemaker wife and business-building husband.",
+
+    "_MISTRAL_TASK_5_LEGAL_PRINCIPLES": "======================",
+    "legal_principles_identified": [
+      {
+        "principle": "Equal sharing is paradigm outcome in long marriage",
+        "authority": "White v White [2000] UKHL 54",
+        "applicability": "directly applied",
+        "ratio": true
+      },
+      {
+        "principle": "Homemaker contributions equal in value to financial contributions",
+        "authority": "Miller v Miller [2006] UKHL 24",
+        "applicability": "directly applied",
+        "ratio": true
+      },
+      {
+        "principle": "Business built during marriage is matrimonial property despite one party's skill",
+        "authority": "Miller v Miller [2006] UKHL 24",
+        "applicability": "directly applied",
+        "ratio": true
+      },
+      {
+        "principle": "Homemaker role enables breadwinner to build business",
+        "authority": "Implicit in judgment",
+        "applicability": "high",
+        "ratio": true
+      }
+    ],
+    "order_made": {
+      "type": "property_adjustment_order",
+      "statutory_basis": "MCA 1973 s23, s24",
+      "wife_receives": {
+        "matrimonial_home": 30000000,
+        "business_value_share": 12500000,
+        "liquid_assets": "to bring total to £27.5M"
+      },
+      "husband_receives": {
+        "business": "full business retained",
+        "investment_properties": "full investment portfolio retained",
+        "total_value": 27500000
+      },
+      "division_ratio": "50/50",
+      "principle": "equal_sharing"
+    },
+
+    "_MISTRAL_TASK_6_CASE_CATEGORIZATION": "======================",
+    "case_category": "financial_provision_high_net_worth",
+    "case_sub_category": "equal_sharing_long_marriage_homemaker",
+    "case_tags": [
+      "ratio_decidendi",
+      "equal_sharing_ordered",
+      "50_50_division",
+      "homemaker_contributions_equal",
+      "White_v_White_applied",
+      "Miller_v_Miller_applied",
+      "business_divided",
+      "matrimonial_home_awarded_wife",
+      "long_marriage_20_years",
+      "high_net_worth_55M"
+    ],
+    "complexity_score": 9.5,
+    "precedent_value": "high",
+
+    "_MISTRAL_TASK_7_CASE_CONTEXT_SHARED": "======================",
+    "case_context": {
+      "comment": "IDENTICAL to chunk_1 - shared across ALL 94 paragraphs",
+      "marriage_details": {
+        "marriage_date": "1995-07",
+        "marriage_duration_years": 20,
+        "courtship_years": 4,
+        "separation_date": "2015-06",
+        "marriage_type": "long_marriage"
+      },
+      "children": {
+        "count": 2,
+        "details": [
+          {"type": "son", "age": 16, "dependent": true},
+          {"type": "daughter", "age": 13, "dependent": true}
+        ]
+      },
+      "financial_snapshot": {
+        "total_assets": 55000000,
+        "husband_assets": 53000000,
+        "wife_assets": 2000000,
+        "matrimonial_home_value": 30000000,
+        "business_value": 25000000,
+        "investment_income_annual": 800000,
+        "all_assets_acquired_during_marriage": true
+      },
+      "party_roles": {
+        "husband": {
+          "role": "primary_breadwinner",
+          "occupation": "property_developer",
+          "business_owner": true,
+          "business_built_during_marriage": true
+        },
+        "wife": {
+          "role": "primary_homemaker",
+          "employment_status": "ceased_work_after_first_child",
+          "primary_caregiver": true,
+          "direct_financial_contributions": false,
+          "homemaker_contributions": true
+        }
+      }
+    },
+
+    "_QUERY_MATCHING_METADATA": "======================",
+    "matches_user_scenarios": [
+      "wife_was_homemaker",
+      "husband_built_business_during_marriage",
+      "long_marriage_20_years_plus",
+      "high_net_worth_50M_plus",
+      "equal_sharing_ordered",
+      "homemaker_contributions_recognized_equal",
+      "50_50_division",
+      "wife_receives_matrimonial_home",
+      "business_division",
+      "White_v_White_applied",
+      "Miller_v_Miller_applied",
+      "property_adjustment_order",
+      "financial_provision"
+    ],
+
+    "relevant_form_e_sections": [
+      "contributions",
+      "assets_property",
+      "assets_business",
+      "needs_housing",
+      "income_investment",
+      "standard_of_living"
+    ],
+
+    "retrieval_keywords": [
+      "equal sharing",
+      "White v White",
+      "Miller v Miller",
+      "50/50 division",
+      "homemaker contributions equal",
+      "20-year marriage",
+      "business during marriage",
+      "paradigm case",
+      "matrimonial home awarded",
+      "property adjustment order",
+      "£27.5M each",
+      "non-financial contributions"
+    ]
+  },
+
+  "consistency_demonstration": {
+    "note": "Both chunks share IDENTICAL case_context object",
+    "explanation": "When user queries 'wife homemaker husband business 20-year marriage', retrieval finds BOTH paragraphs because:",
+    "reasons": [
+      "1. case_context.party_roles.wife.role = 'primary_homemaker' (SAME in both chunks)",
+      "2. case_context.party_roles.husband.business_owner = true (SAME in both chunks)",
+      "3. case_context.marriage_details.marriage_duration_years = 20 (SAME in both chunks)",
+      "4. matches_user_scenarios includes 'wife_was_homemaker' (in BOTH chunks)",
+      "5. Paragraph 15 provides FACTS, Paragraph 87 provides LEGAL REASONING - user gets COMPLETE picture"
+    ],
+    "retrieval_workflow": "Hybrid search (BM25 + BGE embeddings) → Cross-encoder reranking → Returns para 15 (facts) + para 87 (ratio) → LLM has full context"
+  }
+}

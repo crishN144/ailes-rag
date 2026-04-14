@@ -1,0 +1,5 @@
+hpc_outputs/
+*.npy
+*.pkl
+__pycache__/
+.DS_Store

@@ -1,0 +1,418 @@
+{
+  "_metadata": {
+    "version": "2.0",
+    "created": "2025-12-21",
+    "author": "Crish Nagarkar",
+    "description": "AILES RAG Retrieval Benchmark — Golden queries with expected documents verified against corpus",
+    "corpus": {
+      "total_chunks": 310177,
+      "judgment_chunks": 303117,
+      "statute_chunks": 7060,
+      "courts": ["EWHC-Family", "EWFC", "EWCOP"],
+      "statutes": 25,
+      "year_range": "2003-2024"
+    },
+    "format": "Inspired by BEIR/RAGAS evaluation format. Each query has expected_documents (verified in corpus), difficulty tier, and metrics to compute.",
+    "metrics": {
+      "recall_at_5": "Fraction of expected_documents found in top 5 results",
+      "recall_at_10": "Fraction of expected_documents found in top 10 results",
+      "mrr": "Mean Reciprocal Rank of first expected document",
+      "hit_rate": "1 if any expected document appears in top 10, else 0",
+      "precision_at_10": "Fraction of top 10 results that are in expected_documents",
+      "target": "Recall@10 >= 0.7, MRR >= 0.5, Hit Rate >= 0.9"
+    }
+  },
+
+  "queries": [
+
+    {
+      "id": "FR_01_s25_basic",
+      "category": "financial_remedy",
+      "difficulty": "easy",
+      "query_type": "legal",
+      "query": "What factors must the court consider when deciding financial provision on divorce?",
+      "expected_documents": {
+        "statutes": [
+          "mca-1973-section-25-full",
+          "mca-1973-section-25(2)(a)",
+          "mca-1973-section-25(2)(b)",
+          "mca-1973-section-23"
+        ],
+        "judgments": [
+          "ewfc-2022-[2022]-EWFC-75",
+          "ewhc-family-2004-[2004]-EWHC-1364-(Fam)"
+        ]
+      },
+      "must_not_retrieve": ["ca-1989", "i(pfd)a-1975"],
+      "notes": "Baseline s.25 test. If this fails, retrieval is fundamentally broken."
+    },
+
+    {
+      "id": "FR_02_maintenance_assets",
+      "category": "financial_remedy",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "What periodical payments and spousal maintenance would a court award where total matrimonial assets are approximately £750,000?",
+      "expected_documents": {
+        "statutes": [
+          "mca-1973-section-25-full",
+          "mca-1973-section-25(2)(a)",
+          "mca-1973-section-25(2)(b)",
+          "mca-1973-section-23",
+          "mca-1973-section-28",
+          "mca-1973-section-25A"
+        ],
+        "judgments": [
+          "ewfc-2022-[2022]-EWFC-75",
+          "ewfc-2021-[2021]-EWFC-126"
+        ]
+      },
+      "must_not_retrieve": [],
+      "notes": "Tests retrieval of maintenance + clean break provisions together."
+    },
+
+    {
+      "id": "FR_03_contributions_homemaker",
+      "category": "financial_remedy",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "How does the court recognise non-financial contributions of a homemaker spouse under Section 25(2)(f) of the Matrimonial Causes Act 1973?",
+      "expected_documents": {
+        "statutes": [
+          "mca-1973-section-25(2)(f)",
+          "mca-1973-section-25-full"
+        ],
+        "judgments": [
+          "ewfc-2022-[2022]-EWFC-75",
+          "ewfc-2022-[2022]-EWFC-135"
+        ]
+      },
+      "must_not_retrieve": [],
+      "notes": "Specific subsection retrieval — tests precision within s.25."
+    },
+
+    {
+      "id": "FR_04_conduct_nondisclosure",
+      "category": "financial_remedy",
+      "difficulty": "hard",
+      "query_type": "legal",
+      "query": "When is conduct relevant in financial remedy proceedings, particularly where a party has dissipated assets or failed to make disclosure?",
+      "expected_documents": {
+        "statutes": [
+          "mca-1973-section-25(2)(g)",
+          "mca-1973-section-37"
+        ],
+        "judgments": [
+          "ewhc-family-2021-[2021]-EWHC-545-(Fam)",
+          "ewfc-2021-[2021]-EWFC-126"
+        ]
+      },
+      "must_not_retrieve": [],
+      "notes": "Akhmedova v Akhmedov [2021] EWHC 545 is the landmark non-disclosure case in corpus."
+    },
+
+    {
+      "id": "FR_05_clean_break",
+      "category": "financial_remedy",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "When should the court impose a clean break and terminate financial obligations between former spouses after divorce?",
+      "expected_documents": {
+        "statutes": [
+          "mca-1973-section-25A",
+          "mca-1973-section-28",
+          "mca-1973-section-25(2)(d)"
+        ],
+        "judgments": [
+          "ewhc-family-2003-[2003]-EWHC-328-(Fam)"
+        ]
+      },
+      "must_not_retrieve": [],
+      "notes": "Tests s.25A clean break provision retrieval."
+    },
+
+    {
+      "id": "FR_06_trust_piercing",
+      "category": "financial_remedy",
+      "difficulty": "hard",
+      "query_type": "legal",
+      "query": "Can the court treat assets held in a family trust as a financial resource available to a spouse under Section 25?",
+      "expected_documents": {
+        "statutes": [
+          "mca-1973-section-25-full",
+          "mca-1973-section-24"
+        ],
+        "judgments": [
+          "ewfc-2021-[2021]-EWFC-94",
+          "ewhc-family-2021-[2021]-EWHC-545-(Fam)",
+          "ewfc-2022-[2022]-EWFC-75"
+        ]
+      },
+      "must_not_retrieve": [],
+      "notes": "Haya v Mohammed [2021] EWFC 94 and Akhmedova are major trust cases in corpus."
+    },
+
+    {
+      "id": "FR_07_inherited_assets",
+      "category": "financial_remedy",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "How should inherited or pre-marital non-matrimonial assets be treated in financial remedy proceedings?",
+      "expected_documents": {
+        "statutes": [
+          "mca-1973-section-25(2)(a)",
+          "mca-1973-section-25-full"
+        ],
+        "judgments": [
+          "ewhc-family-2003-[2003]-EWHC-328-(Fam)",
+          "ewfc-b-2024-[2024]-EWFC-238-(B)"
+        ]
+      },
+      "must_not_retrieve": [],
+      "notes": "Tests non-matrimonial property concepts."
+    },
+
+    {
+      "id": "FR_08_pension_sharing",
+      "category": "financial_remedy",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "What are the provisions for pension sharing and pension attachment orders on divorce?",
+      "expected_documents": {
+        "statutes": [
+          "mca-1973-section-25B",
+          "mca-1973-section-25C",
+          "mca-1973-section-25D",
+          "mca-1973-section-25B"
+        ],
+        "judgments": [
+          "ewfc-2023-[2023]-EWFC-149"
+        ]
+      },
+      "must_not_retrieve": [],
+      "notes": "Tests pension-specific statutory retrieval."
+    },
+
+    {
+      "id": "CW_01_welfare_checklist",
+      "category": "children_welfare",
+      "difficulty": "easy",
+      "query_type": "legal",
+      "query": "What is the welfare checklist and paramountcy principle under the Children Act 1989?",
+      "expected_documents": {
+        "statutes": [
+          "ca-1989-section-1-full",
+          "ca-1989-section-1(3)(a)",
+          "ca-1989-section-1(3)(b)",
+          "ca-1989-section-1(3)(c)"
+        ],
+        "judgments": [
+          "ewhc-family-2020-[2020]-EWFC-16"
+        ]
+      },
+      "must_not_retrieve": ["mca-1973"],
+      "notes": "Pure children law query — should not retrieve MCA 1973."
+    },
+
+    {
+      "id": "CW_02_child_wishes",
+      "category": "children_welfare",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "How does the court assess the wishes and feelings of a child who refuses contact with a parent due to alleged emotional abuse?",
+      "expected_documents": {
+        "statutes": [
+          "ca-1989-section-1(3)(a)",
+          "ca-1989-section-1-full"
+        ],
+        "judgments": [
+          "ewfc-b-2024-[2024]-EWFC-75-(B)"
+        ]
+      },
+      "must_not_retrieve": [],
+      "notes": "Tests domestic abuse + children welfare intersection."
+    },
+
+    {
+      "id": "DA_01_occupation_order",
+      "category": "domestic_abuse",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "What are the grounds for granting a non-molestation order or occupation order under the Family Law Act 1996?",
+      "expected_documents": {
+        "statutes": [
+          "fla-1996-section-33",
+          "fla-1996-section-42",
+          "fla-1996-section-36"
+        ],
+        "judgments": [
+          "ewhc-family-2020-[2020]-EWHC-2502-(Fam)"
+        ]
+      },
+      "must_not_retrieve": ["mca-1973-section-25"],
+      "notes": "Tests FLA 1996 domestic abuse provisions — completely different statute from financial remedy."
+    },
+
+    {
+      "id": "INH_01_reasonable_provision",
+      "category": "inheritance",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "What provision can a dependant claim from a deceased person's estate under the Inheritance (Provision for Family and Dependants) Act 1975?",
+      "expected_documents": {
+        "statutes": [
+          "i(pfd)a-1975-section-1",
+          "i(pfd)a-1975-section-2",
+          "i(pfd)a-1975-section-3-full"
+        ],
+        "judgments": [
+          "ewhc-family-2020-[2020]-EWHC-1134-(Fam)",
+          "ewhc-family-2019-[2019]-EWHC-349-(Fam)"
+        ]
+      },
+      "must_not_retrieve": ["mca-1973-section-25"],
+      "notes": "Tests inheritance act retrieval — must NOT confuse with MCA financial remedy."
+    },
+
+    {
+      "id": "PLAIN_01_maintenance",
+      "category": "financial_remedy",
+      "difficulty": "easy",
+      "query_type": "plain_english",
+      "query": "My husband earns £100k and I stayed home with the kids for 15 years. What am I entitled to in the divorce?",
+      "expected_documents": {
+        "statutes": [
+          "mca-1973-section-25-full",
+          "mca-1973-section-25(2)(a)",
+          "mca-1973-section-25(2)(f)",
+          "mca-1973-section-23"
+        ],
+        "judgments": []
+      },
+      "must_not_retrieve": [],
+      "notes": "PLAIN ENGLISH — tests query translation. User says 'entitled to', system must map to s.25 factors + s.23 orders."
+    },
+
+    {
+      "id": "PLAIN_02_hiding_money",
+      "category": "financial_remedy",
+      "difficulty": "medium",
+      "query_type": "plain_english",
+      "query": "I think my wife is hiding money and assets. What can the court do about it?",
+      "expected_documents": {
+        "statutes": [
+          "mca-1973-section-37",
+          "mca-1973-section-25(2)(g)"
+        ],
+        "judgments": [
+          "ewhc-family-2021-[2021]-EWHC-545-(Fam)"
+        ]
+      },
+      "must_not_retrieve": [],
+      "notes": "PLAIN ENGLISH — tests conduct/non-disclosure retrieval from informal query."
+    },
+
+    {
+      "id": "PLAIN_03_child_custody",
+      "category": "children_welfare",
+      "difficulty": "easy",
+      "query_type": "plain_english",
+      "query": "My ex wants to take our daughter to live in another country. Can I stop him?",
+      "expected_documents": {
+        "statutes": [
+          "ca-1989-section-1-full",
+          "ca-1984-section-1"
+        ],
+        "judgments": []
+      },
+      "must_not_retrieve": ["mca-1973-section-25"],
+      "notes": "PLAIN ENGLISH — child abduction / relocation. Tests CA 1989 + Child Abduction and Custody Act 1985."
+    },
+
+    {
+      "id": "PLAIN_04_domestic_violence",
+      "category": "domestic_abuse",
+      "difficulty": "medium",
+      "query_type": "plain_english",
+      "query": "My partner is violent and I need him out of the house. What legal options do I have?",
+      "expected_documents": {
+        "statutes": [
+          "fla-1996-section-33",
+          "fla-1996-section-42",
+          "daa-2021-section-1"
+        ],
+        "judgments": []
+      },
+      "must_not_retrieve": ["mca-1973"],
+      "notes": "PLAIN ENGLISH — must map 'violent' to FLA 1996 occupation orders + Domestic Abuse Act 2021."
+    },
+
+    {
+      "id": "PLAIN_05_inheritance",
+      "category": "inheritance",
+      "difficulty": "hard",
+      "query_type": "plain_english",
+      "query": "My father died and left everything to his new wife. I have a disability and was financially dependent on him. Can I challenge the will?",
+      "expected_documents": {
+        "statutes": [
+          "i(pfd)a-1975-section-1",
+          "i(pfd)a-1975-section-3-full"
+        ],
+        "judgments": []
+      },
+      "must_not_retrieve": ["mca-1973"],
+      "notes": "PLAIN ENGLISH — Inheritance Act claim from disabled adult child. Hard because query never mentions any legal terms."
+    },
+
+    {
+      "id": "NEG_01_out_of_scope",
+      "category": "negative_test",
+      "difficulty": "n/a",
+      "query_type": "out_of_scope",
+      "query": "What are the tax implications of cryptocurrency trading gains in the UK?",
+      "expected_documents": {
+        "statutes": [],
+        "judgments": []
+      },
+      "must_not_retrieve": [],
+      "notes": "NEGATIVE TEST — no relevant documents should score above 0.7. Tests that system doesn't hallucinate relevance."
+    },
+
+    {
+      "id": "NEG_02_wrong_jurisdiction",
+      "category": "negative_test",
+      "difficulty": "n/a",
+      "query_type": "out_of_scope",
+      "query": "What are the grounds for divorce under California community property law?",
+      "expected_documents": {
+        "statutes": [],
+        "judgments": []
+      },
+      "must_not_retrieve": ["mca-1973"],
+      "notes": "NEGATIVE TEST — US law query. System should return low scores. If MCA 1973 appears, it's a false positive."
+    },
+
+    {
+      "id": "FORM_E_01",
+      "category": "form_e_integration",
+      "difficulty": "hard",
+      "query_type": "form_e",
+      "query": "Wife, primary carer, no income, 15-year marriage, husband earns £180k as company director, family home £850k with £200k mortgage, husband's business worth £2.5m, two children ages 12 and 14, wife needs housing.",
+      "expected_documents": {
+        "statutes": [
+          "mca-1973-section-25-full",
+          "mca-1973-section-25(2)(a)",
+          "mca-1973-section-25(2)(b)",
+          "mca-1973-section-25(2)(f)",
+          "mca-1973-section-24",
+          "mca-1973-section-23"
+        ],
+        "judgments": [
+          "ewfc-2022-[2022]-EWFC-75"
+        ]
+      },
+      "must_not_retrieve": ["i(pfd)a-1975"],
+      "notes": "FORM E SIMULATION — tests how system handles structured financial data as input. Should retrieve s.25 factors + property orders."
+    }
+  ]
+}
