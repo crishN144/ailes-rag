@@ -57,25 +57,27 @@ python3 1_upload_to_qdrant/upload_to_qdrant.py
 
 Creates collection `uk_family_law_dense` with dense (BGE 1024-dim) + sparse (BM25) vectors. Takes ~30-45 minutes.
 
-### Step 5: Run benchmark
+### Step 5: Validate retrieval (run_benchmark.py)
 
 ```bash
-export GEMINI_API_KEY="your-key"
 python3 3_tests_and_results/run_benchmark.py
 ```
 
-Runs 20 golden queries, prints pass/fail scorecard with Recall@K, MRR, Hit Rate.
+Tests **retrieval quality only** — no LLM generation. Runs 20 golden queries through the hybrid search pipeline (BGE + BM25 + RRF + Cross-Encoder), compares the top-10 retrieved chunks against known expected documents, and prints a pass/fail scorecard with Recall@K, MRR, Hit Rate. Use this to verify that the right statutes and judgments are being retrieved before building anything on top.
 
-### Step 6: Run full pipeline
+### Step 6: Test full pipeline (run_pipeline.py)
 
 ```bash
+export GEMINI_API_KEY="your-key"
 python3 3_tests_and_results/run_pipeline.py
 python3 3_tests_and_results/run_pipeline.py --query "How are child welfare considerations assessed?"
 ```
 
-Runs all 10 steps: Gemini query translation, BGE embedding, Qdrant hybrid search, RRF fusion, cross-encoder reranking, Gemini answer generation.
+Tests the **complete end-to-end flow** including LLM generation. Runs all 10 steps: Gemini query translation, BGE embedding, Qdrant hybrid search, RRF fusion, cross-encoder reranking, context packaging, and Gemini answer generation. Use this to see the full pipeline working with a real query and getting a generated answer with citations.
 
 See `3_tests_and_results/output.md` for output from a previous pipeline run (Dec 2025).
+
+**In short:** `run_benchmark.py` = "are we retrieving the right chunks?" | `run_pipeline.py` = "does the whole thing work end-to-end?"
 
 ---
 
