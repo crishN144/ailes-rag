@@ -101,6 +101,13 @@ def main():
     )
     print(f"   ✅ Created collection with dense + sparse vectors\n")
 
+    # Build token -> index mapping from the BM25 vocabulary.
+    # This gives each token in the BM25 vocab a stable unique integer id,
+    # which Qdrant requires for sparse vectors (no collisions allowed).
+    print(f"🔧 Building BM25 vocabulary index...")
+    token_to_idx = {token: idx for idx, token in enumerate(bm25.idf.keys())}
+    print(f"   ✅ Vocabulary size: {len(token_to_idx):,} tokens\n")
+
     # Prepare points for upload
     print(f"📦 Preparing points for upload...")
 
@@ -109,26 +116,22 @@ def main():
         # Dense vector (BGE embedding)
         dense_vector = embeddings[i].tolist()
 
-        # Sparse vector (BM25 - simplified)
-        # For production, you'd use actual BM25 sparse vectors
-        # Here we'll create a simple sparse representation
-        bm25_text = chunk.get('bm25_text', '')
-        tokens = bm25_text.split()
-        token_set = set(tokens)
+        # Sparse vector (BM25 TF-IDF)
+        # Use the actual BM25 model's per-doc frequencies and IDF scores.
+        # Accumulate into a dict keyed by vocab index so duplicate
+        # tokens (or index collisions) are summed, not duplicated —
+        # Qdrant rejects sparse vectors with duplicate indices (422).
+        index_scores = {}
+        doc_freqs = bm25.doc_freqs[i]  # {token: freq in this doc}
+        for token, freq in doc_freqs.items():
+            if token in token_to_idx:
+                idx = token_to_idx[token]
+                idf = bm25.idf[token]
+                score = freq * idf  # TF-IDF
+                index_scores[idx] = index_scores.get(idx, 0.0) + score
 
-        # Create sparse vector (token indices and counts)
-        # This is simplified - in production you'd use proper BM25 scores
-        sparse_indices = []
-        sparse_values = []
-
-        # Simple term frequency
-        for token in token_set:
-            # Hash token to index (simplified)
-            token_hash = abs(hash(token)) % 100000
-            tf = tokens.count(token)
-
-            sparse_indices.append(token_hash)
-            sparse_values.append(float(tf))
+        sparse_indices = list(index_scores.keys())
+        sparse_values = list(index_scores.values())
 
         # Create point
         point = PointStruct(
