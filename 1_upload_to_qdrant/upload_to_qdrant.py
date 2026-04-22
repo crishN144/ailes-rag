@@ -11,8 +11,13 @@ Bulk-upload-safe version (for 310K+ chunks on a 16GB VM):
 """
 
 import json
+import logging
 import os
 import pickle
+import resource
+import sys
+import time
+import traceback
 from pathlib import Path
 
 import numpy as np
@@ -39,6 +44,35 @@ BATCH_SIZE = 1000      # Qdrant docs recommend 1000–10000 for bulk loads
 # raise "cannot pickle 'generator' object"). Streaming + batch=1000 is
 # fast enough — no multiprocessing risk.
 PARALLEL = 1
+LOG_EVERY = 10_000     # log RAM + ETA every N points streamed
+
+LOG_FILE = Path("/tmp/qdrant_upload.log")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    handlers=[logging.FileHandler(LOG_FILE, mode="w"), logging.StreamHandler(sys.stdout)],
+)
+log = logging.getLogger("upload")
+
+
+def rss_gb() -> float:
+    """Resident memory in GB. Linux returns KB, macOS returns bytes."""
+    usage = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    if sys.platform == "darwin":
+        return usage / (1024 ** 3)
+    return usage / (1024 ** 2)
+
+
+def available_gb() -> float:
+    """Available system RAM in GB (Linux only; returns -1 elsewhere)."""
+    try:
+        with open("/proc/meminfo") as f:
+            for line in f:
+                if line.startswith("MemAvailable:"):
+                    return int(line.split()[1]) / (1024 ** 2)
+    except FileNotFoundError:
+        pass
+    return -1.0
 
 
 def main():
@@ -121,8 +155,21 @@ def main():
 
     # Streaming point generator - no full list built in RAM.
     # Wrapped in tqdm so we see progress during the upload_points call.
+    # Logs RAM + ETA every LOG_EVERY points so if it stalls we know why.
+    upload_start = time.time()
+
     def point_generator():
         for i, chunk in enumerate(tqdm(chunks, desc="Streaming", unit="pt")):
+            if i and i % LOG_EVERY == 0:
+                elapsed = time.time() - upload_start
+                rate = i / elapsed if elapsed else 0
+                eta = (len(chunks) - i) / rate if rate else float("inf")
+                log.info(
+                    f"progress={i:,}/{len(chunks):,} ({i/len(chunks)*100:.1f}%) "
+                    f"rate={rate:.0f}pt/s eta={eta/60:.1f}min "
+                    f"rss={rss_gb():.2f}GB avail={available_gb():.2f}GB"
+                )
+
             # Raw term frequencies (Qdrant applies IDF via Modifier.IDF)
             index_scores = {}
             for token, freq in bm25.doc_freqs[i].items():
@@ -155,16 +202,25 @@ def main():
             )
 
     # Streaming bulk upload - handles batching, retries, parallelism
-    print(f"Uploading {len(chunks):,} points (streaming, parallel={PARALLEL})...")
-    client.upload_points(
-        collection_name=collection_name,
-        points=point_generator(),
-        batch_size=BATCH_SIZE,
-        parallel=PARALLEL,
-        max_retries=3,
-        wait=True,
-    )
-    print("   Upload complete\n")
+    log.info(f"Uploading {len(chunks):,} points (streaming, parallel={PARALLEL})")
+    log.info(f"RAM before upload: rss={rss_gb():.2f}GB avail={available_gb():.2f}GB")
+    try:
+        client.upload_points(
+            collection_name=collection_name,
+            points=point_generator(),
+            batch_size=BATCH_SIZE,
+            parallel=PARALLEL,
+            max_retries=3,
+            wait=True,
+        )
+    except Exception as exc:
+        log.error("UPLOAD FAILED: %s", exc)
+        log.error("RAM at failure: rss=%.2fGB avail=%.2fGB", rss_gb(), available_gb())
+        log.error("Full traceback:\n%s", traceback.format_exc())
+        log.error("Check %s for the full log", LOG_FILE)
+        raise
+    log.info(f"Upload complete. RAM: rss={rss_gb():.2f}GB avail={available_gb():.2f}GB")
+    log.info(f"Total upload time: {(time.time() - upload_start)/60:.1f} min")
 
     # Re-enable HNSW now that all points are in
     print("Re-enabling HNSW indexing...")
