@@ -11,9 +11,11 @@ import numpy as np
 import pickle
 from pathlib import Path
 from qdrant_client import QdrantClient
+from qdrant_client.http.exceptions import UnexpectedResponse
 from qdrant_client.models import (
     Distance, VectorParams, PointStruct,
-    SparseVectorParams, SparseIndexParams
+    SparseVectorParams, SparseIndexParams, SparseVector,
+    Prefetch, FusionQuery, Fusion,
 )
 from tqdm import tqdm
 import os
@@ -75,11 +77,11 @@ def main():
     # Create or recreate collection
     print(f"🏗️  Setting up Qdrant collection: {collection_name}")
 
-    # Delete if exists
+    # Delete if exists (ignore "not found" — collection just didn't exist yet)
     try:
         client.delete_collection(collection_name=collection_name)
         print(f"   Deleted existing collection")
-    except:
+    except (UnexpectedResponse, ValueError):
         pass
 
     # Create collection with dense + sparse vectors
@@ -121,14 +123,16 @@ def main():
         # Accumulate into a dict keyed by vocab index so duplicate
         # tokens (or index collisions) are summed, not duplicated —
         # Qdrant rejects sparse vectors with duplicate indices (422).
+        # doc_freqs tokens are always a subset of the BM25 vocab (token_to_idx
+        # is built from that same vocab), so we can skip an `if token in ...`
+        # guard. Using .get() on index_scores handles any rare duplicate.
         index_scores = {}
         doc_freqs = bm25.doc_freqs[i]  # {token: freq in this doc}
         for token, freq in doc_freqs.items():
-            if token in token_to_idx:
-                idx = token_to_idx[token]
-                idf = bm25.idf[token]
-                score = freq * idf  # TF-IDF
-                index_scores[idx] = index_scores.get(idx, 0.0) + score
+            idx = token_to_idx[token]
+            idf = bm25.idf[token]
+            score = freq * idf  # TF-IDF
+            index_scores[idx] = index_scores.get(idx, 0.0) + score
 
         sparse_indices = list(index_scores.keys())
         sparse_values = list(index_scores.values())
@@ -177,11 +181,6 @@ def main():
             wait=True
         )
 
-        # Progress update every 100 batches
-        if (i // batch_size) % 100 == 0:
-            current_batch = i // batch_size
-            print(f"   Uploaded {current_batch}/{num_batches} batches ({current_batch/num_batches*100:.1f}%)")
-
     print(f"\n   ✅ Upload complete!\n")
 
     # Verify upload
@@ -204,17 +203,35 @@ def main():
     test_query = "What factors does the court consider for child welfare?"
     query_embedding = model.encode([test_query], normalize_embeddings=True)[0].tolist()
 
-    # Hybrid search (dense + sparse with RRF)
-    results = client.search(
+    # Build a sparse query vector from the BM25 vocab (same mapping as upload)
+    query_tokens = test_query.lower().split()
+    query_index_scores = {}
+    for token in query_tokens:
+        if token in token_to_idx:
+            idx = token_to_idx[token]
+            # Query-side weight is just the token's IDF
+            query_index_scores[idx] = bm25.idf[token]
+
+    query_sparse = SparseVector(
+        indices=list(query_index_scores.keys()),
+        values=list(query_index_scores.values()),
+    )
+
+    # Hybrid search: dense + sparse fused with RRF, server-side
+    results = client.query_points(
         collection_name=collection_name,
-        query_vector=("dense", query_embedding),
+        prefetch=[
+            Prefetch(query=query_embedding, using="dense", limit=20),
+            Prefetch(query=query_sparse, using="sparse", limit=20),
+        ],
+        query=FusionQuery(fusion=Fusion.RRF),
         limit=5,
-        with_payload=True
+        with_payload=True,
     )
 
     print(f"Query: '{test_query}'\n")
-    print(f"Top 5 results:")
-    for i, result in enumerate(results, 1):
+    print(f"Top 5 results (hybrid, RRF fusion):")
+    for i, result in enumerate(results.points, 1):
         payload = result.payload
         print(f"\n{i}. Score: {result.score:.4f}")
         print(f"   ID: {payload.get('chunk_id')}")
