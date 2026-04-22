@@ -31,11 +31,14 @@ from qdrant_client.models import (
     SparseVectorParams,
     VectorParams,
 )
-from sentence_transformers import SentenceTransformer
+from tqdm import tqdm
 
 
 BATCH_SIZE = 1000      # Qdrant docs recommend 1000–10000 for bulk loads
-PARALLEL = 4           # concurrent upload workers
+# parallel=1 avoids qdrant-client issue #459 (generator + parallel>1 can
+# raise "cannot pickle 'generator' object"). Streaming + batch=1000 is
+# fast enough — no multiprocessing risk.
+PARALLEL = 1
 
 
 def main():
@@ -68,6 +71,7 @@ def main():
     with open(merged_file, "r") as f:
         data = json.load(f)
     chunks = data["chunks"]
+    del data  # free ~800MB outer dict; we only need `chunks`
     print(f"   Loaded {len(chunks):,} chunks")
 
     # mmap the embeddings - does NOT copy the full array into RAM
@@ -115,9 +119,10 @@ def main():
     token_to_idx = {token: idx for idx, token in enumerate(bm25.idf.keys())}
     print(f"   Vocab size: {len(token_to_idx):,} tokens\n")
 
-    # Streaming point generator - no full list built in RAM
+    # Streaming point generator - no full list built in RAM.
+    # Wrapped in tqdm so we see progress during the upload_points call.
     def point_generator():
-        for i, chunk in enumerate(chunks):
+        for i, chunk in enumerate(tqdm(chunks, desc="Streaming", unit="pt")):
             # Raw term frequencies (Qdrant applies IDF via Modifier.IDF)
             index_scores = {}
             for token, freq in bm25.doc_freqs[i].items():
@@ -179,6 +184,10 @@ def main():
     print("\n" + "=" * 100)
     print("TEST HYBRID SEARCH (RRF)")
     print("=" * 100 + "\n")
+
+    # Lazy-import sentence_transformers so the upload itself doesn't fail
+    # if the library is missing on the VM.
+    from sentence_transformers import SentenceTransformer
 
     model = SentenceTransformer("BAAI/bge-large-en-v1.5")
     test_query = "What factors does the court consider for child welfare?"
