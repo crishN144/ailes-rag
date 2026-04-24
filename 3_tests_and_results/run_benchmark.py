@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 """
+[SUPERSEDED by v2]
+This v1 benchmark has been replaced for the v2 CI gate by:
+  - 4_v2_update/benchmark/run_benchmark_v2.py
+  - 4_v2_update/benchmark/golden_queries_v2.json
+Do NOT use this file for v2 CI. Kept here for historical reference.
+For interactive parity grading, see 3_tests_and_results/run_eval.py.
+
+---
+
 AILES RAG Benchmark Runner
 Loads golden queries from golden_queries.json, runs each through
 the hybrid pipeline (BGE + BM25 + RRF + Cross-Encoder), compares results

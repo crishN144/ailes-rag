@@ -1,0 +1,545 @@
+{
+  "_metadata": {
+    "version": "2.0",
+    "created": "2026-04-23",
+    "author": "Crish Nagarkar",
+    "description": "AILES RAG Retrieval Benchmark v2 — widened with Phase-2 grading data. canonical_chunks = Grade-3 primary authorities (verified). acceptable_chunks = Grade-2 alternatives drawn from top-5 retrieved chunks that supported a CORRECT or PARTIAL verdict.",
+    "schema": {
+      "canonical_chunks": "Grade-3 primary authorities; recall@k should count these.",
+      "acceptable_chunks": "Grade-2 alternatives (also count for recall).",
+      "must_not_retrieve_prefixes": "Per-query list of chunk_id prefixes that must NOT appear in top-k (precision/negative test).",
+      "coverage": "When set, a 'covered' retrieval must include at least one chunk from each named concept's any_of list.",
+      "judge_rubric": "One-sentence falsifiable description of a Grade-3 retrieval."
+    },
+    "verification": "Every chunk_id in canonical_chunks and acceptable_chunks was verified against merged_all_chunks.json. IDs that could not be verified are recorded in unverified_chunks.json.",
+    "notes": [
+      "Judgment chunk_ids are stored at document level (no -para_N suffix); verification checks whether any paragraph-level chunk_id has that document prefix.",
+      "PLAIN_04 was graded INCORRECT in Phase 2 — no retrieved chunks were added to its acceptable_chunks; only the original canonical_chunks remain as targets."
+    ]
+  },
+  "queries": [
+    {
+      "id": "FR_01_s25_basic",
+      "category": "financial_remedy",
+      "difficulty": "easy",
+      "query_type": "legal",
+      "query": "What factors must the court consider when deciding financial provision on divorce?",
+      "canonical_chunks": [
+        "mca-1973-section-25-full",
+        "mca-1973-section-25(2)(a)",
+        "mca-1973-section-25(2)(b)",
+        "mca-1973-section-23",
+        "ewfc-2022-[2022]-EWFC-75",
+        "ewhc-family-2004-[2004]-EWHC-1364-(Fam)"
+      ],
+      "acceptable_chunks": [
+        "ewfc-2024-[2024]-EWFC-187",
+        "ewhc-family-2018-[2018]-EWHC-2973-(Fam)",
+        "ewfc-b-2023-[2023]-EWFC-298-(B)",
+        "ewfc-2023-[2023]-EWFC-266-(B)"
+      ],
+      "must_not_retrieve_prefixes": [],
+      "coverage": null,
+      "judge_rubric": "Retrieves MCA 1973 s.25 (the statutory factors) and at least one judgment applying s.25(2) in a financial remedy context."
+    },
+    {
+      "id": "FR_02_maintenance_assets",
+      "category": "financial_remedy",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "What periodical payments and spousal maintenance would a court award where total matrimonial assets are approximately £750,000?",
+      "canonical_chunks": [
+        "mca-1973-section-25-full",
+        "mca-1973-section-25(2)(a)",
+        "mca-1973-section-25(2)(b)",
+        "mca-1973-section-23",
+        "mca-1973-section-28",
+        "mca-1973-section-25A",
+        "ewfc-2022-[2022]-EWFC-75",
+        "ewfc-2021-[2021]-EWFC-126"
+      ],
+      "acceptable_chunks": [
+        "ewfc-b-2022-[2022]-EWFC-95-(B)",
+        "ewhc-family-2015-[2015]-EWHC-1670-(Fam)",
+        "ewhc-family-2014-[2014]-EWHC-3430-(Fam)",
+        "ewhc-family-2018-[2018]-EWFC-81",
+        "mca-1973-section-24A"
+      ],
+      "must_not_retrieve_prefixes": [],
+      "coverage": null,
+      "judge_rubric": "Retrieves MCA 1973 s.23 / s.25 / s.25A / s.28 plus a judgment quantifying spousal periodical payments on mid-range assets."
+    },
+    {
+      "id": "FR_03_contributions_homemaker",
+      "category": "financial_remedy",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "How does the court recognise non-financial contributions of a homemaker spouse under Section 25(2)(f) of the Matrimonial Causes Act 1973?",
+      "canonical_chunks": [
+        "mca-1973-section-25(2)(f)",
+        "mca-1973-section-25-full",
+        "ewfc-2022-[2022]-EWFC-75",
+        "ewfc-2022-[2022]-EWFC-135"
+      ],
+      "acceptable_chunks": [
+        "ewhc-family-2015-[2015]-EWHC-3941-(Fam)",
+        "mca-1973-section-25E",
+        "ewhc-family-2013-[2013]-EWHC-3873-(Fam)",
+        "mca-1973-section-25B"
+      ],
+      "must_not_retrieve_prefixes": [],
+      "coverage": null,
+      "judge_rubric": "Retrieves MCA 1973 s.25(2)(f) explicitly and a judgment where the court weighed homemaker contributions."
+    },
+    {
+      "id": "FR_04_conduct_nondisclosure",
+      "category": "financial_remedy",
+      "difficulty": "hard",
+      "query_type": "legal",
+      "query": "When is conduct relevant in financial remedy proceedings, particularly where a party has dissipated assets or failed to make disclosure?",
+      "canonical_chunks": [
+        "mca-1973-section-25(2)(g)",
+        "mca-1973-section-37",
+        "ewhc-family-2021-[2021]-EWHC-545-(Fam)",
+        "ewfc-2021-[2021]-EWFC-126",
+        "ewhc-family-2020-[2020]-EWFC-52"
+      ],
+      "acceptable_chunks": [
+        "ewfc-b-2023-[2023]-EWFC-52-(B)",
+        "ewfc-b-2023-[2023]-EWFC-279-(B)",
+        "ewhc-family-2011-[2011]-EWHC-2637-(Fam)",
+        "ewhc-family-2015-[2015]-EWHC-2507-(Fam)"
+      ],
+      "must_not_retrieve_prefixes": [],
+      "coverage": null,
+      "judge_rubric": "Retrieves OG v AG [2020] EWFC 52 (Mostyn J's four categories of conduct) and MCA 1973 s.25(2)(g) and/or s.37."
+    },
+    {
+      "id": "FR_05_clean_break",
+      "category": "financial_remedy",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "When should the court impose a clean break and terminate financial obligations between former spouses after divorce?",
+      "canonical_chunks": [
+        "mca-1973-section-25A",
+        "mca-1973-section-28",
+        "mca-1973-section-25(2)(d)",
+        "ewhc-family-2003-[2003]-EWHC-328-(Fam)"
+      ],
+      "acceptable_chunks": [
+        "ewfc-b-2023-[2023]-EWFC-36-(B)",
+        "ewfc-2022-[2022]-EWHC-2701-(Fam)",
+        "ewhc-family-2020-[2020]-EWHC-466-(Fam)",
+        "ewhc-family-2023-[2023]-EWHC-3531-(Fam)",
+        "ewfc-b-2023-[2023]-EWFC-269-(B)"
+      ],
+      "must_not_retrieve_prefixes": [],
+      "coverage": null,
+      "judge_rubric": "Retrieves MCA 1973 s.25A (clean-break duty) plus a judgment (e.g. Miller/McFarlane lineage) applying it."
+    },
+    {
+      "id": "FR_06_trust_piercing",
+      "category": "financial_remedy",
+      "difficulty": "hard",
+      "query_type": "legal",
+      "query": "Can the court treat assets held in a family trust as a financial resource available to a spouse under Section 25?",
+      "canonical_chunks": [
+        "mca-1973-section-25-full",
+        "mca-1973-section-24",
+        "ewfc-2021-[2021]-EWFC-94",
+        "ewhc-family-2021-[2021]-EWHC-545-(Fam)",
+        "ewfc-2022-[2022]-EWFC-75"
+      ],
+      "acceptable_chunks": [
+        "ewhc-family-2012-[2012]-EWHC-167-(Fam)",
+        "ewhc-family-2018-[2018]-EWFC-91",
+        "ewfc-2022-[2022]-EWFC-192",
+        "ewhc-family-2022-[2022]-EWHC-2026-(Fam)",
+        "ewhc-family-2016-[2016]-EWHC-1995-(Fam)"
+      ],
+      "must_not_retrieve_prefixes": [],
+      "coverage": null,
+      "judge_rubric": "Retrieves MCA 1973 s.25 and a judgment (Charman, Whaley, Thomas v Thomas or Haya v Mohammed) treating trust assets as a resource."
+    },
+    {
+      "id": "FR_07_inherited_assets",
+      "category": "financial_remedy",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "How should inherited or pre-marital non-matrimonial assets be treated in financial remedy proceedings?",
+      "canonical_chunks": [
+        "mca-1973-section-25(2)(a)",
+        "mca-1973-section-25-full",
+        "ewhc-family-2003-[2003]-EWHC-328-(Fam)",
+        "ewfc-b-2024-[2024]-EWFC-238-(B)"
+      ],
+      "acceptable_chunks": [
+        "ewfc-2023-[2023]-EWFC-177",
+        "ewfc-2022-[2022]-EWFC-136",
+        "ewhc-family-2023-[2023]-EWHC-3531-(Fam)",
+        "ewhc-family-2015-[2015]-EWHC-360-(Fam)",
+        "ewfc-b-2024-[2024]-EWFC-295-(B)"
+      ],
+      "must_not_retrieve_prefixes": [],
+      "coverage": null,
+      "judge_rubric": "Retrieves MCA 1973 s.25(2)(a) and a judgment (White v White / K v L lineage) distinguishing matrimonial from non-matrimonial property."
+    },
+    {
+      "id": "FR_08_pension_sharing",
+      "category": "financial_remedy",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "What are the provisions for pension sharing and pension attachment orders on divorce?",
+      "canonical_chunks": [
+        "mca-1973-section-25B",
+        "mca-1973-section-25C",
+        "mca-1973-section-25D",
+        "ewfc-2023-[2023]-EWFC-149"
+      ],
+      "acceptable_chunks": [
+        "mca-1973-section-24E",
+        "mca-1973-section-24B",
+        "mca-1973-section-24G",
+        "mca-1973-section-21A",
+        "dds-2020-schedule-SCHEDULE-para-24"
+      ],
+      "must_not_retrieve_prefixes": [],
+      "coverage": [
+        {
+          "name": "pension sharing",
+          "any_of": [
+            "mca-1973-section-24B",
+            "mca-1973-section-21A",
+            "mca-1973-section-24E"
+          ]
+        },
+        {
+          "name": "pension attachment",
+          "any_of": [
+            "mca-1973-section-25B",
+            "mca-1973-section-25C",
+            "mca-1973-section-25D"
+          ]
+        }
+      ],
+      "judge_rubric": "Retrieves at least one pension-sharing section (MCA 1973 s.24B / s.21A / s.24E) AND at least one pension-attachment section (s.25B / s.25C / s.25D)."
+    },
+    {
+      "id": "CW_01_welfare_checklist",
+      "category": "children_welfare",
+      "difficulty": "easy",
+      "query_type": "legal",
+      "query": "What is the welfare checklist and paramountcy principle under the Children Act 1989?",
+      "canonical_chunks": [
+        "ca-1989-section-1-full",
+        "ca-1989-section-1(3)(a)",
+        "ca-1989-section-1(3)(b)",
+        "ca-1989-section-1(3)(c)",
+        "ewhc-family-2020-[2020]-EWFC-16"
+      ],
+      "acceptable_chunks": [
+        "ewfc-2024-[2024]-EWFC-60-(B)",
+        "ewfc-b-2024-[2024]-EWFC-286-(B)",
+        "ewfc-b-2023-[2023]-EWFC-96-(B)",
+        "ewfc-2024-[2024]-EWFC-87",
+        "ewfc-b-2024-[2024]-EWFC-42-(B)"
+      ],
+      "must_not_retrieve_prefixes": [
+        "mca-1973"
+      ],
+      "coverage": [
+        {
+          "name": "paramountcy",
+          "any_of": [
+            "ca-1989-section-1-full"
+          ]
+        },
+        {
+          "name": "welfare checklist",
+          "any_of": [
+            "ca-1989-section-1(3)(a)",
+            "ca-1989-section-1(3)(b)",
+            "ca-1989-section-1(3)(c)",
+            "ca-1989-section-1(3)(d)",
+            "ca-1989-section-1(3)(e)",
+            "ca-1989-section-1(3)(f)",
+            "ca-1989-section-1(3)(g)"
+          ]
+        }
+      ],
+      "judge_rubric": "Retrieves CA 1989 s.1 (paramountcy) and at least one s.1(3) sub-paragraph of the welfare checklist."
+    },
+    {
+      "id": "CW_02_child_wishes",
+      "category": "children_welfare",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "How does the court assess the wishes and feelings of a child who refuses contact with a parent due to alleged emotional abuse?",
+      "canonical_chunks": [
+        "ca-1989-section-1(3)(a)",
+        "ca-1989-section-1-full",
+        "ewfc-b-2024-[2024]-EWFC-75-(B)"
+      ],
+      "acceptable_chunks": [
+        "ewhc-family-2011-[2011]-EWHC-3521-(Fam)",
+        "ewfc-b-2023-[2023]-EWFC-72-(B)",
+        "ewfc-b-2023-[2023]-EWFC-202-(B)",
+        "ewhc-family-2024-[2024]-EWHC-59-(Fam)"
+      ],
+      "must_not_retrieve_prefixes": [],
+      "coverage": null,
+      "judge_rubric": "Retrieves CA 1989 s.1(3)(a) (wishes and feelings) and a judgment weighing a child's stated wishes in an abuse context."
+    },
+    {
+      "id": "DA_01_occupation_order",
+      "category": "domestic_abuse",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "What are the grounds for granting a non-molestation order or occupation order under the Family Law Act 1996?",
+      "canonical_chunks": [
+        "fla-1996-section-33",
+        "fla-1996-section-42",
+        "fla-1996-section-36",
+        "ewhc-family-2020-[2020]-EWHC-2502-(Fam)"
+      ],
+      "acceptable_chunks": [
+        "ewfc-b-2023-[2023]-EWFC-74-(B)",
+        "ewfc-b-2024-[2024]-EWFC-279-(B)",
+        "fla-1996-section-45",
+        "fla-1996-section-46"
+      ],
+      "must_not_retrieve_prefixes": [
+        "mca-1973-section-25"
+      ],
+      "coverage": null,
+      "judge_rubric": "Retrieves FLA 1996 s.33 (occupation) and s.42 (non-molestation), with at least one judgment applying them."
+    },
+    {
+      "id": "INH_01_reasonable_provision",
+      "category": "inheritance",
+      "difficulty": "medium",
+      "query_type": "legal",
+      "query": "What provision can a dependant claim from a deceased person's estate under the Inheritance (Provision for Family and Dependants) Act 1975?",
+      "canonical_chunks": [
+        "i(pfd)a-1975-section-1",
+        "i(pfd)a-1975-section-2",
+        "i(pfd)a-1975-section-3-full",
+        "ewhc-family-2020-[2020]-EWHC-1134-(Fam)",
+        "ewhc-family-2019-[2019]-EWHC-349-(Fam)"
+      ],
+      "acceptable_chunks": [
+        "i(pfd)a-1975-section-20",
+        "i(pfd)a-1975-section-9",
+        "i(pfd)a-1975-section-8"
+      ],
+      "must_not_retrieve_prefixes": [
+        "mca-1973-section-25"
+      ],
+      "coverage": null,
+      "judge_rubric": "Retrieves I(PFD)A 1975 s.1 (applicants) and s.3 (reasonable-provision matters), plus s.2 (orders) or a dependant-claim judgment."
+    },
+    {
+      "id": "PLAIN_01_maintenance",
+      "category": "financial_remedy",
+      "difficulty": "easy",
+      "query_type": "plain_english",
+      "query": "My husband earns £100k and I stayed home with the kids for 15 years. What am I entitled to in the divorce?",
+      "canonical_chunks": [
+        "mca-1973-section-25-full",
+        "mca-1973-section-25(2)(a)",
+        "mca-1973-section-25(2)(f)",
+        "mca-1973-section-23"
+      ],
+      "acceptable_chunks": [
+        "ewfc-2024-[2024]-EWFC-76",
+        "ewfc-b-2023-[2023]-EWFC-241-(B)",
+        "ewfc-2022-[2022]-EWFC-75",
+        "ewhc-family-2013-[2013]-EWHC-1232-(Fam)",
+        "ewhc-family-2019-[2019]-EWHC-1224-(Fam)"
+      ],
+      "must_not_retrieve_prefixes": [],
+      "coverage": null,
+      "judge_rubric": "Maps the plain-English query to MCA 1973 s.25 factors and s.23 orders."
+    },
+    {
+      "id": "PLAIN_02_hiding_money",
+      "category": "financial_remedy",
+      "difficulty": "medium",
+      "query_type": "plain_english",
+      "query": "I think my wife is hiding money and assets. What can the court do about it?",
+      "canonical_chunks": [
+        "mca-1973-section-37",
+        "mca-1973-section-25(2)(g)",
+        "ewhc-family-2021-[2021]-EWHC-545-(Fam)"
+      ],
+      "acceptable_chunks": [
+        "ewhc-family-2014-[2014]-EWHC-4844-(Fam)",
+        "ewhc-family-2014-[2014]-EWHC-175-(Fam)",
+        "ewhc-family-2011-[2011]-EWHC-913-(Fam)",
+        "ewfc-2024-[2024]-EWFC-79",
+        "ewhc-family-2013-[2013]-EWHC-3637-(Fam)"
+      ],
+      "must_not_retrieve_prefixes": [],
+      "coverage": null,
+      "judge_rubric": "Retrieves MCA 1973 s.37 (dispositions to defeat claims) and/or s.25(2)(g), and a non-disclosure judgment (Akhmedova lineage)."
+    },
+    {
+      "id": "PLAIN_03_child_custody",
+      "category": "children_welfare",
+      "difficulty": "easy",
+      "query_type": "plain_english",
+      "query": "My ex wants to take our daughter to live in another country. Can I stop him?",
+      "canonical_chunks": [
+        "ca-1989-section-1-full",
+        "ca-1984-section-1"
+      ],
+      "acceptable_chunks": [
+        "ewfc-2023-[2023]-EWFC-233",
+        "ewhc-family-2012-[2012]-EWHC-139-(Fam)",
+        "ewhc-family-2021-[2021]-EWFC-38",
+        "ewhc-family-2013-[2013]-EWHC-2970-(Fam)",
+        "ca-1984-section-6"
+      ],
+      "must_not_retrieve_prefixes": [
+        "mca-1973-section-25"
+      ],
+      "coverage": null,
+      "judge_rubric": "Retrieves CA 1989 s.1 and either CA 1984 s.1 or a child-relocation / prohibited-steps judgment."
+    },
+    {
+      "id": "PLAIN_04_domestic_violence",
+      "category": "domestic_abuse",
+      "difficulty": "medium",
+      "query_type": "plain_english",
+      "query": "My partner is violent and I need him out of the house. What legal options do I have?",
+      "canonical_chunks": [
+        "fla-1996-section-33",
+        "fla-1996-section-42",
+        "daa-2021-section-1"
+      ],
+      "acceptable_chunks": [],
+      "must_not_retrieve_prefixes": [
+        "mca-1973"
+      ],
+      "coverage": [
+        {
+          "name": "occupation order",
+          "any_of": [
+            "fla-1996-section-33",
+            "fla-1996-section-36",
+            "fla-1996-section-37"
+          ]
+        },
+        {
+          "name": "non-molestation order",
+          "any_of": [
+            "fla-1996-section-42"
+          ]
+        },
+        {
+          "name": "abuse definition",
+          "any_of": [
+            "daa-2021-section-1"
+          ]
+        }
+      ],
+      "judge_rubric": "Retrieves FLA 1996 s.33 (occupation) AND s.42 (non-molestation) AND DAA 2021 s.1 (definition of abuse)."
+    },
+    {
+      "id": "PLAIN_05_inheritance",
+      "category": "inheritance",
+      "difficulty": "hard",
+      "query_type": "plain_english",
+      "query": "My father died and left everything to his new wife. I have a disability and was financially dependent on him. Can I challenge the will?",
+      "canonical_chunks": [
+        "i(pfd)a-1975-section-1",
+        "i(pfd)a-1975-section-3-full"
+      ],
+      "acceptable_chunks": [
+        "ewhc-family-2014-[2014]-EWHC-542-(Fam)",
+        "i(pfd)a-1975-section-11",
+        "i(pfd)a-1975-section-2"
+      ],
+      "must_not_retrieve_prefixes": [
+        "mca-1973"
+      ],
+      "coverage": null,
+      "judge_rubric": "Retrieves I(PFD)A 1975 s.1 (eligible applicants incl. adult children) and s.3 (matters relevant to reasonable provision)."
+    },
+    {
+      "id": "NEG_01_out_of_scope",
+      "category": "negative_test",
+      "difficulty": "n/a",
+      "query_type": "out_of_scope",
+      "query": "What are the tax implications of cryptocurrency trading gains in the UK?",
+      "canonical_chunks": [],
+      "acceptable_chunks": [],
+      "must_not_retrieve_prefixes": [
+        "mca-1973",
+        "ca-1989",
+        "fla-1996",
+        "i(pfd)a-1975",
+        "daa-2021"
+      ],
+      "coverage": null,
+      "judge_rubric": "Returns no UK family-law chunk above the configured relevance threshold (cryptocurrency tax is out of scope)."
+    },
+    {
+      "id": "NEG_02_wrong_jurisdiction",
+      "category": "negative_test",
+      "difficulty": "n/a",
+      "query_type": "out_of_scope",
+      "query": "What are the grounds for divorce under California community property law?",
+      "canonical_chunks": [],
+      "acceptable_chunks": [],
+      "must_not_retrieve_prefixes": [
+        "mca-1973",
+        "ca-1989"
+      ],
+      "coverage": null,
+      "judge_rubric": "Returns no English family-law chunk above the configured relevance threshold (California divorce law is out of scope); in particular, MCA 1973 must not appear as a top result."
+    },
+    {
+      "id": "FORM_E_01",
+      "category": "form_e_integration",
+      "difficulty": "hard",
+      "query_type": "form_e",
+      "query": "Wife, primary carer, no income, 15-year marriage, husband earns £180k as company director, family home £850k with £200k mortgage, husband's business worth £2.5m, two children ages 12 and 14, wife needs housing.",
+      "canonical_chunks": [
+        "mca-1973-section-25-full",
+        "mca-1973-section-25(2)(a)",
+        "mca-1973-section-25(2)(b)",
+        "mca-1973-section-25(2)(f)",
+        "mca-1973-section-24",
+        "mca-1973-section-23",
+        "ewfc-2022-[2022]-EWFC-75"
+      ],
+      "acceptable_chunks": [
+        "ewfc-b-2024-[2024]-EWFC-175-(B)",
+        "ewfc-2022-[2022]-EWFC-197",
+        "ewhc-family-2015-[2015]-EWHC-1547-(Fam)",
+        "ewfc-2024-[2024]-EWFC-76",
+        "ewfc-b-2024-[2024]-EWFC-118-(B)"
+      ],
+      "must_not_retrieve_prefixes": [
+        "i(pfd)a-1975"
+      ],
+      "coverage": [
+        {
+          "name": "s.25 factors",
+          "any_of": [
+            "mca-1973-section-25-full"
+          ]
+        },
+        {
+          "name": "financial orders",
+          "any_of": [
+            "mca-1973-section-23",
+            "mca-1973-section-24"
+          ]
+        }
+      ],
+      "judge_rubric": "Retrieves MCA 1973 s.25 (full + 2(a),(b),(f)) and s.23/s.24 (orders), plus at least one judgment on needs-based distribution with children."
+    }
+  ]
+}

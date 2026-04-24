@@ -1,10 +1,67 @@
-# AILES RAG System 
+# AILES RAG System
 
 Hybrid retrieval system for UK family law. 310,177 chunks (303K judgments + 7K statutes) with dense (BGE) + sparse (BM25) search, RRF fusion, and cross-encoder reranking.
 
 ---
 
-## Quick Start
+## ⚠️ v2 PATCHES (READ THIS FIRST IF YOU ARE DEPLOYING)
+
+The original handoff (folders `1_upload_to_qdrant/`, `2_how_it_was_built/`, `3_tests_and_results/`) populated Qdrant and shipped v1 a few days ago.
+
+**Qdrant is already loaded.** You do NOT need to re-run the upload or rebuild indexes. The v2 work is purely a swap of:
+1. The expander prompt in the GCS bucket
+2. Three Python modules in the RAG service
+3. The CI benchmark
+
+### The 5 production changes — apply in this order
+
+| # | Where it goes in production | File in this repo |
+|---|---|---|
+| 1 | **GCS prompts bucket** — replace existing prompts file | `4_v2_update/prompts/prompts_v9.yaml` |
+| 2 | **RAG service** — drop-in retrieval module | `4_v2_update/retrieval/retrieval_step4.py` |
+| 3 | **RAG service** — glue between expander JSON and retrieval | `4_v2_update/retrieval/retrieve_from_expander.py` |
+| 4 | **RAG service** — post-LLM citation safety layer | `4_v2_update/retrieval/citation_validator.py` |
+| 5 | **CI** — replaces old benchmark | `4_v2_update/benchmark/run_benchmark_v2.py` + `golden_queries_v2.json` |
+
+That's the entire shipping list. Five files. Nothing else in `4_v2_update/` ships — everything else is under `4_v2_update/reference/` (see its own README):
+- `reference/diagnostics/` — one-shot probes that proved the bugs. Re-run if you want to reproduce a finding.
+- `reference/experimental_archived/` — `statute_boost.py` and `maxp_reranker.py` were built but empirically disqualified (10× latency for marginal gain, or out-of-pool chunks). Kept for posterity. Not for production.
+
+### CI gate (run after applying the 5 changes)
+
+```bash
+python3 4_v2_update/benchmark/run_benchmark_v2.py
+# → writes /tmp/benchmark_v2_results.json
+# → exits 0 if Hit@10 ≥ 0.85 AND forbidden ≤ 2; else 1
+```
+
+### Files SUPERSEDED by v2 — do NOT use these for the v2 deploy
+
+| Old (v1) | New (v2) |
+|---|---|
+| `2_how_it_was_built/query_translation.py` | `4_v2_update/prompts/prompts_v9.yaml` + `4_v2_update/retrieval/retrieve_from_expander.py` |
+| `3_tests_and_results/run_benchmark.py` | `4_v2_update/benchmark/run_benchmark_v2.py` |
+| `3_tests_and_results/run_pipeline.py` | Replaced by integrated v2 retrieval (the 3 modules in `4_v2_update/retrieval/`) |
+
+Files from v1 that are STILL USED by v2:
+- `1_upload_to_qdrant/*` — reference only; Qdrant already loaded, no re-run needed
+- `3_tests_and_results/golden_queries.json` — still consumed by `run_eval.py`
+
+### Parity check (Adi runs this on the GCP Qdrant after deploy)
+
+```bash
+python3 3_tests_and_results/run_eval.py
+# → writes /tmp/ailes_eval_output.txt (~170 KB single-paste bundle)
+# → paste into Claude Code → returns 20-row ✅/⚠️/❌ verdict table
+```
+
+If results are wildly different from the local run (13 ✅ / 6 ⚠️ / 1 ❌), that's deployment drift — debug parity BEFORE applying any of the 5 v2 changes.
+
+---
+
+## Quick Start (v1 — historical reference)
+
+> **Skip this section if you are doing the v2 deploy.** The Qdrant collection is already populated; the steps below are kept only for the record of how the v1 system was built.
 
 ### Step 1: Get the data files
 
@@ -75,7 +132,7 @@ python3 3_tests_and_results/run_pipeline.py --query "How are child welfare consi
 
 Tests the **complete end-to-end flow** including LLM generation. Runs all 10 steps: Gemini query translation, BGE embedding, Qdrant hybrid search, RRF fusion, cross-encoder reranking, context packaging, and Gemini answer generation. Use this to see the full pipeline working with a real query and getting a generated answer with citations.
 
-See `3_tests_and_results/output.md` for output from a previous pipeline run (Dec 2025).
+See `3_tests_and_results/output.md` for output from a previous v1 pipeline run.
 
 **In short:** `run_benchmark.py` = "are we retrieving the right chunks?" | `run_pipeline.py` = "does the whole thing work end-to-end?"
 
@@ -275,11 +332,29 @@ ailes-rag-handoff/
 │   ├── build_bge_embeddings.py       <- BGE dense embedding generator
 │   └── query_translation.py          <- Gemini Flash query generation
 │
-└── 3_tests_and_results/
-    ├── run_pipeline.py               <- Full 10-step retrieval pipeline (requires Qdrant + Gemini)
-    ├── run_benchmark.py              <- Golden query benchmark runner (requires Qdrant)
-    ├── golden_queries.json           <- 20 verified golden queries
-    └── output.md                     <- Output from a previous pipeline run (Dec 2025)
+├── 3_tests_and_results/
+│   ├── run_pipeline.py               <- [SUPERSEDED] v1 demo pipeline
+│   ├── run_benchmark.py              <- [SUPERSEDED] v1 benchmark — use 4_v2_update/benchmark/run_benchmark_v2.py
+│   ├── run_eval.py                   <- [v2] Claude-as-judge parity check (Adi runs after deploy)
+│   ├── dump_for_grading.py           <- [v2] Imported by run_eval.py
+│   ├── GRADING_RUBRIC.md             <- [v2] Bundled into eval output
+│   ├── golden_queries.json           <- 20 verified golden queries (still used by run_eval.py)
+│   └── output.md                     <- Output from a v1 pipeline run
+│
+└── 4_v2_update/                          <- [v2] read the v2 banner at top of this README
+    ├── prompts/
+    │   └── prompts_v9.yaml               <- [SHIPS] Replaces GCS prompts bucket file
+    ├── retrieval/
+    │   ├── retrieval_step4.py            <- [SHIPS] Drop-in: dual-lane RRF retrieval
+    │   ├── retrieve_from_expander.py     <- [SHIPS] Glue: expander JSON → retrieval pool
+    │   └── citation_validator.py         <- [SHIPS] Post-LLM hallucination safety
+    ├── benchmark/
+    │   ├── run_benchmark_v2.py           <- [SHIPS] New CI gate (Hit@10 ≥ 0.85)
+    │   └── golden_queries_v2.json        <- [SHIPS] Widened benchmark
+    └── reference/                        <- NOT FOR PRODUCTION (see reference/README.md)
+        ├── README.md                     <- Explains what's in this folder and why
+        ├── diagnostics/                  <- One-shot probes; reproduce findings if needed
+        └── experimental_archived/        <- statute_boost + maxp_reranker (disqualified)
 ```
 
 ## Environment Variables

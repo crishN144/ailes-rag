@@ -1,4 +1,13 @@
 """
+[SUPERSEDED by v2]
+This v1 query-translation module has been replaced for the v2 deploy by:
+  - 4_v2_update/prompts/prompts_v9.yaml   (rag.expander block)
+  - 4_v2_update/retrieval/retrieve_from_expander.py
+Do NOT use this file for v2. Kept here for historical reference only.
+See the v2 banner in the top-level README for the full ship list.
+
+---
+
 PRODUCTION-READY HYBRID RETRIEVAL SYSTEM
 Based on: "Why Your RAG System is Failing in Production" blog
 

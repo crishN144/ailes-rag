@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 """
+[SUPERSEDED by v2]
+This v1 demo pipeline has been replaced for v2 by integrated retrieval.
+For the v2 deploy, see:
+  - The v2 banner at the top of the repo README (full ship list)
+  - 4_v2_update/retrieval/   (drop-in modules)
+Kept here as historical reference of how the v1 end-to-end flow looked.
+
+---
+
 AILES RAG Pipeline — Full End-to-End Retrieval
 Connects to: Qdrant Cloud, Gemini Flash API, local BM25 + BGE + Cross-Encoder
 
