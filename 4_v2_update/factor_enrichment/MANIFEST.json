@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-04-25",
+  "scope": "17 curated factor chunks across MCA 1973, CA 1989, IPFDA 1975",
+  "chunk_ids": [
+    "ca-1989-section-1(3)(a)",
+    "ca-1989-section-1(3)(b)",
+    "ca-1989-section-1(3)(c)",
+    "ca-1989-section-1(3)(d)",
+    "ca-1989-section-1(3)(e)",
+    "ca-1989-section-1(3)(f)",
+    "ca-1989-section-1(3)(g)",
+    "i(pfd)a-1975-section-3(2)(a)",
+    "i(pfd)a-1975-section-3(2)(b)",
+    "mca-1973-section-25(2)(a)",
+    "mca-1973-section-25(2)(b)",
+    "mca-1973-section-25(2)(c)",
+    "mca-1973-section-25(2)(d)",
+    "mca-1973-section-25(2)(e)",
+    "mca-1973-section-25(2)(f)",
+    "mca-1973-section-25(2)(g)",
+    "mca-1973-section-25(2)(h)"
+  ],
+  "vocab_size_before": 285928,
+  "vocab_size_after": 285937,
+  "new_tokens_added": 9,
+  "files": {
+    "bm25_model.pkl": "Replace on backend GCS, restart server",
+    "chunk_ids.pkl": "Unchanged copy (replace if backend reads it)",
+    "factor_dense_vectors.npy": "Used by upsert_17.py",
+    "factor_chunk_ids.json": "Order-aligned to factor_dense_vectors.npy",
+    "factor_sparse_vectors.json": "Used by upsert_17.py",
+    "factor_payloads.json": "Used by upsert_17.py",
+    "upsert_17.py": "Run against prod Qdrant after pkl swap"
+  }
+}
